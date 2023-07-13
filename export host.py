@@ -2,7 +2,7 @@ from pyzabbix import ZabbixAPI
 import datetime
 
 now = datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S")
-link = "***" 
+link = "" #"" for save in current folder
 name = now + '.txt'
 
 z = ZabbixAPI('http://***', user='***', password='***')
@@ -20,6 +20,7 @@ for group in groups:
     if key not in d:
       d[key] = dict()
       d[key]["name"] = host['name']
+      d[key]["status"] = host['status']  
   hosts = z.hostinterface.get(['interfaceid', 'hostid', 'main', 'type', 'useip', 'ip', 'dns', 'port', 'available', 'error', 'errors_from', 'disable_until', 'details'])#output=['ip','interfaceid','hostid']
   for host in hosts:
     key = host['hostid']
@@ -29,7 +30,7 @@ for group in groups:
 
 with open(link + name, 'w') as f_out: 
     for key in d.keys():
-      t = "{}|{}|{}|{}\n".format(str(key),d[key]["name"],d[key]["ip"],d[key]["error"])
+      t = "{}|{}|{}|{}|{}\n".format(str(key),d[key]["name"],d[key]["ip"],d[key]["status"],d[key]["error"])
       f_out.write(t)
 print('Save txt file')
 
